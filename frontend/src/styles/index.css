@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  background: #0c0c0c;
+  overflow-x: clip;
+}
+
+body {
+  font-family: "Kanit", sans-serif;
+  color: #E6D3B3;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  /* One size for every oversized section heading, so the hero, "About Me",
+     "Featured Projects" etc. all read at the same scale. The hero line then
+     spans roughly half the viewport width. */
+  --heading-xl: clamp(2rem, 5.5vw, 84px);
+}
+
+.heading-xl {
+  font-size: var(--heading-xl);
+  line-height: 0.95;
+}
+
+.hero-heading {
+  background: linear-gradient(180deg, #8F7C5E 0%, #F3E8D3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* background-clip:text only paints inside the element box; without this the
+     serif descenders (g, p, y) in the accent word get cut off. */
+  padding-bottom: 0.14em;
+}
+
+.accent-word {
+  /* Editorial serif italic for the last word of each big heading. It inherits
+     the heading's gradient fill, so it only changes the letterforms. */
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-size: 1.14em;
+  padding-right: 0.08em; /* italic overhang would otherwise be clipped by the gradient */
+}
+
+.heading-cta {
+  font-size: clamp(2.5rem, 9vw, 9rem);
+  line-height: 0.92;
+}
+
+/* Dark frosted panel behind text columns so copy stays readable over the video. */
+.glass-panel {
+  background: rgba(12, 12, 12, 0.58);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(230, 211, 179, 0.14);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+}
+@media (min-width: 640px) {
+  .glass-panel {
+    padding: 2.5rem;
+  }
+}
+
+/* Visible keyboard focus states, app-wide */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #F3E8D3;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.typewriter-cursor {
+  animation: blink 1s step-end infinite;
+}
+
+/* Tech-stack marquee */
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.tech-marquee {
+  /* Word size for the marquee. Declared here so the band-overlap maths below
+     always uses the same value as the text itself. Tuned for the half-width
+     column the marquee sits in. */
+  --marquee-text: clamp(1.4rem, 3vw, 2.75rem);
+}
+.tech-marquee-track {
+  will-change: transform;
+}
+.tech-marquee:hover .tech-marquee-track {
+  animation-play-state: paused;
+}
+/* Phones: two gently tilted bands stacked with a gap, so neither hides the other. */
+.tech-band-back {
+  transform: rotate(3deg);
+}
+.tech-band-front {
+  transform: rotate(-3deg);
+  margin-top: 1rem;
+}
+/* md+: steeper tilt and the front band pulled up by roughly one band height,
+   so the two cross in an X at the centre and both read clearly at the sides. */
+@media (min-width: 768px) {
+  .tech-band-back {
+    transform: rotate(5deg);
+  }
+  .tech-band-front {
+    transform: rotate(-5deg);
+    margin-top: calc(-1 * (var(--marquee-text) + 1.5rem));
+  }
+}
+.tech-outline {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.5px #F3E8D3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Thin scrollbar for admin tables/sidebars */
+.thin-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(230, 211, 179, 0.2);
+  border-radius: 8px;
+}
