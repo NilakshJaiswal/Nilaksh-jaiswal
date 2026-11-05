@@ -16,6 +16,7 @@
  */
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import "../config/dns";
 import { connectDB } from "../config/db";
 import { assertCoreEnv } from "../config/env";
 import { Admin } from "../models/Admin";

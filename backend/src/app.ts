@@ -3,7 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
-import { env } from "./config/env";
+import { env, assertCoreEnv } from "./config/env";
+import { connectDB } from "./config/db";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 
 import authRoutes from "./routes/auth.routes";
@@ -72,4 +73,23 @@ export function createApp() {
   app.use(errorHandler);
 
   return app;
+}
+
+// ---------------------------------------------------------------------------
+// Vercel entrypoint. Vercel auto-detects Express projects and loads
+// src/app.ts, which must have a default export that is a request handler.
+// It connects to MongoDB (cached between warm invocations) and then hands the
+// request to Express. Local dev still uses createApp() via src/server.ts.
+// ---------------------------------------------------------------------------
+const vercelApp = createApp();
+
+export default async function handler(req: express.Request, res: express.Response) {
+  try {
+    assertCoreEnv();
+    await connectDB();
+  } catch (err) {
+    res.status(500).json({ error: "Server is not configured correctly: " + (err as Error).message });
+    return;
+  }
+  return vercelApp(req, res);
 }
