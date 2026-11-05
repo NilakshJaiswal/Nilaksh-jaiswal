@@ -27,6 +27,8 @@ export function HeroSection({ settings }: HeroSectionProps) {
   const [videoFailed, setVideoFailed] = useState(false);
   const [buttonsVisible, setButtonsVisible] = useState(false);
   const reduced = useReducedMotionPreference();
+  const isTouchDevice =
+    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
 
   const targetTimeRef = useRef(0);
   const seekPendingRef = useRef(false);
@@ -46,7 +48,18 @@ export function HeroSection({ settings }: HeroSectionProps) {
   useEffect(() => {
     if (reduced || !videoUrl || videoFailed) return;
     const video = videoRef.current;
-    if (!video || !videoReady) return;
+    if (!video) return;
+
+    // Phones/tablets: mouse-scrub is impossible and seeking every 500ms is
+    // choppy or blank on iOS/Android. Just play the video as a muted loop.
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      video.muted = true;
+      video.loop = true;
+      video.play().catch(() => {});
+      return;
+    }
+
+    if (!videoReady) return;
 
     function seekToTarget() {
       if (!video) return;
@@ -84,26 +97,13 @@ export function HeroSection({ settings }: HeroSectionProps) {
       seekToTarget();
     }
 
-    // Touch fallback: a gentle automatic drift instead of requiring mouse movement.
-    let touchInterval: ReturnType<typeof setInterval> | undefined;
-    const isTouch = window.matchMedia("(pointer: coarse)").matches;
-    if (isTouch) {
-      touchInterval = setInterval(() => {
-        const duration = video.duration;
-        if (!isFinite(duration) || duration <= 0) return;
-        targetTimeRef.current = (targetTimeRef.current + 0.5) % duration;
-        seekToTarget();
-      }, 500);
-    } else {
-      window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    }
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
 
     video.addEventListener("seeked", handleSeeked);
 
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
       video.removeEventListener("seeked", handleSeeked);
-      if (touchInterval) clearInterval(touchInterval);
     };
   }, [videoReady, videoFailed, reduced, videoUrl]);
 
@@ -117,6 +117,8 @@ export function HeroSection({ settings }: HeroSectionProps) {
           src={videoUrl}
           muted
           playsInline
+          autoPlay={isTouchDevice}
+          loop={isTouchDevice}
           preload="auto"
           className="fixed inset-0 w-full h-full object-cover z-0"
           style={{ objectPosition: "70% center" }}
