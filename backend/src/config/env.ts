@@ -19,14 +19,14 @@ export const env = {
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean),
-  mongodbUri: required("MONGODB_URI"),
-  jwtSecret: required("JWT_SECRET"),
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  cookieSecure: process.env.COOKIE_SECURE === "true",
   dnsServers: (process.env.DNS_SERVERS || "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean),
+  mongodbUri: required("MONGODB_URI"),
+  jwtSecret: required("JWT_SECRET"),
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
+  cookieSecure: process.env.COOKIE_SECURE === "true",
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
     apiKey: process.env.CLOUDINARY_API_KEY || "",
@@ -46,10 +46,11 @@ export function assertCoreEnv(): void {
   if (!env.mongodbUri) missing.push("MONGODB_URI");
   if (!env.jwtSecret) missing.push("JWT_SECRET");
   if (missing.length) {
-    // Throw instead of exiting so serverless callers (api/index.ts) can return an error response.
-    throw new Error(
+    // eslint-disable-next-line no-console
+    console.error(
       `Missing required environment variables: ${missing.join(", ")}. ` +
         `Copy .env.example to .env and fill these in before starting the server.`
     );
+    process.exit(1);
   }
 }

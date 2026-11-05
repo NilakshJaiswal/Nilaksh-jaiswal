@@ -1,3 +1,4 @@
+import "./config/dns";
 import { createApp } from "./app";
 import { connectDB } from "./config/db";
 import { assertCoreEnv, env } from "./config/env";

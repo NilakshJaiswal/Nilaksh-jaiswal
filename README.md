@@ -139,26 +139,6 @@ visibility toggle; Projects use an explicit draft/published status.
   frontend's deployed URL) and `COOKIE_SECURE=true` once served over HTTPS.
   A health check is available at `GET /api/health`.
 
-### Deploying the backend to Vercel (optional)
-
-The backend can run as a Vercel serverless function through `backend/api/index.ts`.
-Create a **separate** Vercel project for it:
-
-- **Root Directory:** `backend` (not the repository root)
-- **Framework Preset:** Other (`backend/vercel.json` sets `framework: null`, so Vercel
-  does not auto-detect `src/app.ts` as an Express entry point)
-- **Build Command:** leave empty. Vercel compiles `api/index.ts` itself. A build
-  command makes Vercel expect a static output folder and fails with `STATIC_BUILD_NO_OUT_DIR`.
-- **Output Directory:** leave empty · **Install Command:** `npm install`
-- **Environment Variables:** `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`,
-  `CORS_ORIGIN` (your frontend URL), `COOKIE_SECURE=true`, and the `CLOUDINARY_*`
-  and `SMTP_*` values if used. Do not set `PORT`. Set these in the Vercel dashboard only,
-  never in committed files.
-- Test with `GET /api/health`. `GET /` returns a 404 JSON response by design.
-
-Deploy the frontend as a second project with **Root Directory** `frontend`, and set
-`VITE_API_URL` to the backend project's URL.
-
 ## 7. Customization quick-reference
 
 | What | Where |

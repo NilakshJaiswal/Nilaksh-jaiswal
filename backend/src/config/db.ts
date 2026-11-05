@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import "./dns";
 import { env } from "./env";
 
 // One shared connection promise. On a long-running server it runs once; on a

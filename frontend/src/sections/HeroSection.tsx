@@ -19,7 +19,6 @@ const DEFAULT_ACTIONS = [
   { label: "Explore Projects", link: "#projects" },
   { label: "About Me", link: "#about" },
   { label: "View Resume", link: "/resume.pdf" },
-  { label: "Contact Me", link: "#contact" },
 ];
 
 export function HeroSection({ settings }: HeroSectionProps) {
@@ -169,16 +168,14 @@ export function HeroSection({ settings }: HeroSectionProps) {
           className="flex flex-wrap gap-3"
         >
           {actions.map((action) => (
-            <a
+            <ContactButton
               key={action.label}
               href={action.link}
               {...(action.link.startsWith("/") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="inline-flex items-center justify-center bg-white text-black border border-black/10 rounded-full text-[13px] sm:text-[15px] px-5 py-2 hover:bg-black hover:text-white transition-colors duration-200"
-            >
-              {action.label}
-            </a>
+              label={action.label}
+              className="!px-5 !py-2 !text-[13px] sm:!text-[15px]"
+            />
           ))}
-          <ContactButton href="#contact" className="!px-6 !py-2 !text-xs" />
         </motion.div>
       </div>
 
